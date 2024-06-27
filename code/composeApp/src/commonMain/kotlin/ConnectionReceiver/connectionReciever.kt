@@ -15,8 +15,8 @@ fun connectionReciever() {
         val socket = socketClassification.accept()
 
         // Testing if the sockets are successfully created using DataInputStream
-        val dis = DataInputStream(socket.getInputStream())
-        val str = dis.readUTF()
+        val dataInputStream = DataInputStream(socket.getInputStream())
+        val str = dataInputStream.readUTF()
         println("Message = " + str)
 
         socketClassification.close()
