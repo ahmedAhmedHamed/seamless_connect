@@ -22,6 +22,7 @@ fun connectionReciever() {
         socketClassification.close()
         socket.close()
     }catch (e: IOException){
+        println("IOException occurred: ${e}")
     }catch (e: SocketException){
         println("SocketException occurred: ${e.message}")
     }catch (e: BindException){
