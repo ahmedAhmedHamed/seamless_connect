@@ -3,7 +3,7 @@ import java.io.PrintWriter
 import java.net.Socket
 
 fun connectToDevice(device: String) : Boolean {
-    val port = 1234
+    val port = 8121
     println("from connect")
 
     try {

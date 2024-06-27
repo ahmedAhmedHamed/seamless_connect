@@ -1,11 +1,12 @@
-import java.net.ServerSocket
+
+import java.io.DataInputStream
 import java.io.IOException
 import java.net.BindException
+import java.net.ServerSocket
 import java.net.SocketException
-import java.io.DataInputStream
 
 fun connectionReciever() {
-    val portNum = 8181
+    val portNum = 8121
     try {
         //Create instance of "ServerSocket" class with portNumber
         val socketClassification = ServerSocket(portNum)
