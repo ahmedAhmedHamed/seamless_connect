@@ -1,4 +1,4 @@
-
+package ConnectionReceiver
 import java.io.DataInputStream
 import java.io.IOException
 import java.net.BindException
@@ -22,7 +22,6 @@ fun connectionReciever() {
         socketClassification.close()
         socket.close()
     }catch (e: IOException){
-        println("IOException occurred: ${e.message}")
     }catch (e: SocketException){
         println("SocketException occurred: ${e.message}")
     }catch (e: BindException){
