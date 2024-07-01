@@ -1,11 +1,11 @@
 package ConnectionReceiver
-import java.io.DataInputStream
+import java.io.BufferedInputStream
 import java.io.IOException
 import java.net.BindException
 import java.net.ServerSocket
 import java.net.SocketException
 
-fun connectionReciever() {
+fun receiveConnection() {
     val portNum = 8121
     try {
         //Create instance of "ServerSocket" class with portNumber
@@ -15,9 +15,12 @@ fun connectionReciever() {
         val socket = socketClassification.accept()
 
         // Testing if the sockets are successfully created using DataInputStream
-        val dataInputStream = DataInputStream(socket.getInputStream())
-        val str = dataInputStream.readUTF()
+        val dataInputStream = BufferedInputStream(socket.getInputStream())
+        val str = dataInputStream.read()
+
         println("Message = " + str)
+
+        dataInputStream.close()
 
         socketClassification.close()
         socket.close()
