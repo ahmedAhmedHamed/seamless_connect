@@ -25,6 +25,8 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+            implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
