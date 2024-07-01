@@ -1,24 +1,18 @@
 package DeviceConnector
-import java.io.PrintWriter
 import java.net.Socket
 
 fun connectToDevice(device: String) : Boolean {
     val port = 8121
-    println("from connect")
+    println("trying to connect...")
 
     try {
         val socket = Socket(device, port)
         val outputStream = socket.getOutputStream()
-        val streamWriter = PrintWriter(outputStream, true)
-
-        streamWriter.println("hello from the other device")
-
-        streamWriter.close()
+        outputStream.write(5)
         socket.close()
-
         return true
     } catch (e: Exception) {
-        println("doesn't work $e")
+        println("connectToDevice has thrown an exception. $e")
 
         return false
     }
