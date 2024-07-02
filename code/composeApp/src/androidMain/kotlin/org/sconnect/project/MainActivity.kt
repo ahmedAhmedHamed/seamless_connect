@@ -1,7 +1,6 @@
 package org.sconnect.project
 
 import App
-import DeviceConnector.connectToDevice
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,7 +14,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch(Dispatchers.IO) {
-            connectToDevice("192.168.1.3")
+//            wakeUpDevice(MAC,IP)
         }
         setContent {
             App()
