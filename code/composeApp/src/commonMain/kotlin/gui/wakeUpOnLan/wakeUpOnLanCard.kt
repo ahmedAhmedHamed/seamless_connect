@@ -21,5 +21,4 @@ fun wakeUpOnLanCard(ipAddress: String, MAC: String, portNumber: Int = 9) {
             Text(text = portNumber.toString())
         }
     }
-
 }
