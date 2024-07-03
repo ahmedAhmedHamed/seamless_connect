@@ -6,6 +6,6 @@ import gui.wakeUpOnLan.wakeUpOnLanCard
 @Preview
 @Composable
 fun WakeUpOnLanCardPreview() {
-    wakeUpOnLanCard(ipAddress = "192.168.1.3", MAC = "00-B0-D0-63-C2-26", portNumber = "9")
+    wakeUpOnLanCard(ipAddress = "192.168.1.3", MAC = "00-B0-D0-63-C2-26", portNumber = 9)
 }
 
