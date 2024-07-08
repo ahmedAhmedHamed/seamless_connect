@@ -1,5 +1,6 @@
 package gui.wakeUpOnLan
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,6 +9,7 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -41,13 +43,12 @@ fun TextFieldRow() {
                     }
                 },
                 modifier = Modifier.weight(1f)
-                    .focusRequester(focusRequesters[index]),
-//                textStyle = TextStyle(fontSize = 9.sp)
+                    .focusRequester(focusRequesters[index])
+                    .background(TextFieldDefaults.textFieldColors().backgroundColor(true).value),
             )
             if (index < textFields.size - 1) {
                 Text(
-                    text = ":", // Customize this text as needed
-//                    style = TextStyle(fontSize = 9.sp)
+                    text = ":",
                 )
             }
         }
