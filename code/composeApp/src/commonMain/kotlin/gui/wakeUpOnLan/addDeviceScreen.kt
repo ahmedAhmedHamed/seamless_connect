@@ -20,12 +20,11 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun TextFieldRow() {
+fun TextFieldRow(onValueChange: (x:String) -> Unit = {}) {
     val textFields = remember { mutableStateListOf("", "", "", "","", "", "", "") } // Initial empty list of 8 text fields
     val focusManager = LocalFocusManager.current
     val focusRequesters = remember { List(textFields.size) { FocusRequester() } }
@@ -46,6 +45,14 @@ fun TextFieldRow() {
                         if (newText.length >= 2 && index < textFields.size - 1) {
                             focusManager.moveFocus(FocusDirection.Next)
                         }
+                        var newMacAddress = ""
+                        textFields.forEachIndexed { index, text ->
+                            newMacAddress += text
+                            if (index < textFields.size - 1) {
+                                newMacAddress += ":"
+                            }
+                        }
+                        onValueChange(newMacAddress)
                     },
                     modifier = Modifier.weight(1f).height(21.dp)
                         .focusRequester(focusRequesters[index])
@@ -64,39 +71,39 @@ fun TextFieldRow() {
 
 
 @Composable
-fun addDevicePrompt() {
-    var text1 by remember { mutableStateOf(TextFieldValue("")) }
-    var text2 by remember { mutableStateOf("") }
-    var text3 by remember { mutableStateOf(TextFieldValue("")) }
+fun addDevicePrompt(onFormSubmission: () -> Unit = {}) {
+    var deviceName by remember { mutableStateOf("") }
+    var ipAddress by remember { mutableStateOf("") }
+    var MACAddress by remember { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = {  },
         title = { Text("Add Device") },
         text = {
             Column {
                 TextField(
-                    value = text1,
-                    onValueChange = { text1 = it },
+                    value = deviceName,
+                    onValueChange = { deviceName = it },
                     label = { Text("Device Name.") }
                 )
 
                 TextField(
-                    value = text2,
+                    value = ipAddress,
                     onValueChange = {
-                        text2 = it
+                        ipAddress = it
                     },
                     label = { Text("IPAddress.") }
                 )
 
-                TextFieldRow()
+                TextFieldRow { x -> MACAddress = x }
 
             }
         },
         confirmButton = {
             Button(
                 onClick = {
-                    println("Text 1: ${text1.text}")
-                    println("Text 2: ${text2}")
-                    println("Text 3: ${text3.text}")
+                    println("Text 1: ${deviceName}")
+                    println("Text 2: ${ipAddress}")
+                    println("Text 3: ${MACAddress}")
                 }
             )
             { Text("Submit") }
