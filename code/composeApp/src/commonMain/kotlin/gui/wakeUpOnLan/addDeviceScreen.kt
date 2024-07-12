@@ -1,15 +1,14 @@
 package gui.wakeUpOnLan
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -22,6 +21,8 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
+
 
 @Composable
 fun TextFieldRow() {
@@ -29,31 +30,37 @@ fun TextFieldRow() {
     val focusManager = LocalFocusManager.current
     val focusRequesters = remember { List(textFields.size) { FocusRequester() } }
 
+    Column {
+        Text(
+            text = "MAC Address"
+        )
+        Row (modifier = Modifier.fillMaxWidth()) {
 
-    Row (modifier = Modifier.fillMaxWidth()) {
-        textFields.forEachIndexed { index, text ->
-            BasicTextField(
-                value = text,
+            textFields.forEachIndexed { index, text ->
+                BasicTextField(
+                    value = text,
 
-                onValueChange = { newText ->
-                    if (newText.length <= 2)
-                        textFields[index] = newText.uppercase()
-                    if (newText.length >= 2 && index < textFields.size - 1) {
-                        focusManager.moveFocus(FocusDirection.Next)
-                    }
-                },
-                modifier = Modifier.weight(1f)
-                    .focusRequester(focusRequesters[index])
-                    .background(TextFieldDefaults.textFieldColors().backgroundColor(true).value),
-            )
-            if (index < textFields.size - 1) {
-                Text(
-                    text = ":",
+                    onValueChange = { newText ->
+                        if (newText.length <= 2)
+                            textFields[index] = newText.uppercase()
+                        if (newText.length >= 2 && index < textFields.size - 1) {
+                            focusManager.moveFocus(FocusDirection.Next)
+                        }
+                    },
+                    modifier = Modifier.weight(1f).height(21.dp)
+                        .focusRequester(focusRequesters[index])
+//                        .background(TextFieldDefaults.textFieldColors().backgroundColor(true).value),
                 )
+                if (index < textFields.size - 1) {
+                    Text(
+                        text = ":",
+                    )
+                }
             }
         }
     }
 }
+
 
 
 @Composable
