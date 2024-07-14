@@ -8,21 +8,20 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
-class WakeUpOnLanCard(private val ipAddress: String,
-                      private val MAC: String,
-                      private val portNumber: Int = 9) {
-    @Composable
-    fun show() {
-        Surface (modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colors.primary) {
-            Column(modifier = Modifier.clickable {
-                println(ipAddress)
-                println(MAC)
-            }) {
-                Text(text = ipAddress)
-                Text(text = MAC)
-                Text(text = portNumber.toString())
-            }
+
+@Composable
+fun WakeUpOnLanCard(deviceName: String, ipAddress: String, MAC: String, portNumber: Int = 9) {
+    Surface (modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colors.primary) {
+        Column(modifier = Modifier.clickable {
+            println(ipAddress)
+            println(MAC)
+        }) {
+            Text(text = deviceName)
+            Text(text = ipAddress)
+            Text(text = MAC)
+            Text(text = portNumber.toString())
         }
     }
 }
+
