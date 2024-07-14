@@ -56,7 +56,6 @@ fun TextFieldRow(onValueChange: (x:String) -> Unit = {}) {
                     },
                     modifier = Modifier.weight(1f).height(21.dp)
                         .focusRequester(focusRequesters[index])
-//                        .background(TextFieldDefaults.textFieldColors().backgroundColor(true).value),
                 )
                 if (index < textFields.size - 1) {
                     Text(
@@ -71,7 +70,7 @@ fun TextFieldRow(onValueChange: (x:String) -> Unit = {}) {
 
 
 @Composable
-fun addDevicePrompt(onFormSubmission: () -> Unit = {}) {
+fun addDevicePrompt(onFormSubmission: (deviceName: String, ipAddress: String, MACAddress: String) -> Unit) {
     var deviceName by remember { mutableStateOf("") }
     var ipAddress by remember { mutableStateOf("") }
     var MACAddress by remember { mutableStateOf("") }
@@ -101,9 +100,7 @@ fun addDevicePrompt(onFormSubmission: () -> Unit = {}) {
         confirmButton = {
             Button(
                 onClick = {
-                    println("Text 1: ${deviceName}")
-                    println("Text 2: ${ipAddress}")
-                    println("Text 3: ${MACAddress}")
+                    onFormSubmission(deviceName, ipAddress, MACAddress)
                 }
             )
             { Text("Submit") }
