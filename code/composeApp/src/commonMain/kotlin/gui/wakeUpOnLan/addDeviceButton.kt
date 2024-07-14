@@ -1,4 +1,5 @@
 package gui.wakeUpOnLan
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,11 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun addDeviceButton() {
+fun addDeviceButton(onclick: () -> Unit = {}) {
     MaterialTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             FloatingActionButton(
-                onClick = { /* Handle click here */ },
+                onClick = { onclick() },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(16.dp)
