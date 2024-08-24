@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun TextFieldRow(onValueChange: (x:String) -> Unit = {}) {
-    val textFields = remember { mutableStateListOf("", "", "", "","", "", "", "") } // Initial empty list of 8 text fields
+    val textFields = remember { mutableStateListOf("", "", "", "","", "") }
     val focusManager = LocalFocusManager.current
     val focusRequesters = remember { List(textFields.size) { FocusRequester() } }
 
