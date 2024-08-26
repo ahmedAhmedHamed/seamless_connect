@@ -23,6 +23,10 @@ kotlin {
         val desktopMain by getting
         
         androidMain.dependencies {
+//            implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.20") // Use the latest version
+//            implementation("androidx.core:core-ktx:1.10.0") // Use the latest version
+//            implementation("androidx.appcompat:appcompat:1.6.1") // Use the latest version
+
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
         }
