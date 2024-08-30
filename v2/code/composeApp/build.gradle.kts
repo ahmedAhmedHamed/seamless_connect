@@ -65,7 +65,8 @@ android {
 
     defaultConfig {
         applicationId = "seamless.connect"
-        minSdk = libs.versions.android.minSdk.get().toInt()
+//        minSdk = libs.versions.android.minSdk.get().toInt()
+        minSdk = 30
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"

@@ -3,11 +3,14 @@ package seamless.connect.screencapture
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
 import android.os.Bundle
 import android.os.Build
+import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts
 
-class ScreenCaptureActivity : Activity() {
+class ScreenCaptureActivity : ComponentActivity() {
 
     private lateinit var mediaProjectionManager: MediaProjectionManager
 
@@ -20,6 +23,7 @@ class ScreenCaptureActivity : Activity() {
         // Start screen capture intent
         val captureIntent = mediaProjectionManager.createScreenCaptureIntent()
         startActivityForResult(captureIntent, REQUEST_CODE_CAPTURE_PERM)
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
