@@ -17,6 +17,7 @@ import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.Environment
 import android.os.IBinder
+import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.core.app.NotificationCompat
 import java.io.File
@@ -33,24 +34,7 @@ class ScreenCaptureService : Service() {
         val data = intent?.getParcelableExtra<Intent>("data")
         val displayMetrics = resources.displayMetrics
 
-        val imageReader: ImageReader = ImageReader.newInstance(
-            displayMetrics.widthPixels,
-            displayMetrics.heightPixels,
-            PixelFormat.RGBA_8888,
-            2
-        )
-
-        imageReader.setOnImageAvailableListener({ reader ->
-            val image: Image? = reader.acquireLatestImage()
-            println("setOnImageAvailableListener called!")
-            image?.let {
-                // Process the image here
-//                processImage(it)
-                val file = File(Environment.getExternalStorageDirectory().absolutePath + "/Download/" + "/captured_image.png")
-                saveImageToFile(it, file)
-                it.close() // Don't forget to close the image to free up resources
-            }
-        }, null)
+        val imageReader: ImageReader = setupImageReader(displayMetrics)
 
         if (resultCode == Activity.RESULT_OK && data != null) {
             activateNotification()
@@ -96,6 +80,30 @@ class ScreenCaptureService : Service() {
 
 
         return START_NOT_STICKY
+    }
+
+    private fun setupImageReader(displayMetrics: DisplayMetrics): ImageReader {
+        val imageReader: ImageReader = ImageReader.newInstance(
+            displayMetrics.widthPixels,
+            displayMetrics.heightPixels,
+            PixelFormat.RGBA_8888,
+            2
+        )
+
+        imageReader.setOnImageAvailableListener({ reader ->
+            val image: Image? = reader.acquireLatestImage()
+            println("setOnImageAvailableListener called!")
+            image?.let {
+                // Process the image here
+//                processImage(it)
+                test += 1
+                println("in image processing")
+                val file = File(Environment.getExternalStorageDirectory().absolutePath + "/Download/" + test + "captured_image.png")
+                saveImageToFile(it, file)
+                it.close() // Don't forget to close the image to free up resources
+            }
+        }, null)
+        return imageReader
     }
 
     private fun processImage(image: Image) {
