@@ -20,15 +20,40 @@ import android.os.IBinder
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.core.app.NotificationCompat
+import connections.socket.createClientSocketConnection
 import java.io.File
+import java.net.Socket
+
+/**
+ * TODO:-
+ * notes: computer has the socket server
+ *      but is the one who consumes information
+ * - create a socket connection with computer(server)
+ * - every time an image is generated:
+ *  -- send:
+ *   --- image size
+ *   --- image bytes
+ * - variables maintained:
+ *  -- socket
+ *  -- input stream
+ * client side:
+ * - create socket connection with phone(client)
+ * - every time an int N is received:
+ *  -- read the next N bytes and put them in a bytearray
+ *  -- show that image on the screen
+ */
 
 class ScreenCaptureService : Service() {
 
     private var mediaProjection: MediaProjection? = null
     private var test = 0
+//    private  var socket: Socket? = createClientSocketConnection("192.168.1.5")
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
+//        if (socket === null) {
+//            // TODO error handle this
+//            println("screencaptureservice socket is null!!!")
+//        }
         val projectionManager = getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
         val resultCode = intent?.getIntExtra("resultCode", Activity.RESULT_CANCELED)
         val data = intent?.getParcelableExtra<Intent>("data")
@@ -39,16 +64,8 @@ class ScreenCaptureService : Service() {
         if (resultCode == Activity.RESULT_OK && data != null) {
             activateNotification()
             mediaProjection = projectionManager.getMediaProjection(resultCode, data) as MediaProjection
-            // Start capturing the screen here using mediaProjection
-            mediaProjection?.registerCallback(object : MediaProjection.Callback() {
-                override fun onStop() {
-                    super.onStop()
-                    // Handle the media projection being stopped
-                    println("MediaProjection stopped")
-                    // Release resources if needed
-//                    virtualDisplay?.release()
-                }
-            }, null)
+            mediaProjection?.registerCallback(getMediaProjectionCallback(), null)
+
             var virtualDisplay = mediaProjection!!.createVirtualDisplay(
                 "ScreenCapture",
                 displayMetrics.widthPixels,
@@ -56,30 +73,44 @@ class ScreenCaptureService : Service() {
                 displayMetrics.densityDpi,
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
                 imageReader.surface,
-                object : VirtualDisplay.Callback() {
-                    override fun onPaused() {
-                        super.onPaused()
-                        // Handle display pause
-                        println("Virtual display paused")
-                    }
-
-                    override fun onResumed() {
-                        super.onResumed()
-                        // Handle display resume
-                        println("Virtual display resumed")
-                    }
-
-                    override fun onStopped() {
-                        super.onStopped()
-                        // Handle display stop
-                        imageReader.close()
-                        println("Virtual display stopped")
-                    }
-                }, null)
+                getVirtualDisplayCallback(imageReader), null)
         }
 
 
         return START_NOT_STICKY
+    }
+
+    private fun getVirtualDisplayCallback(imageReader: ImageReader): VirtualDisplay.Callback {
+        return object : VirtualDisplay.Callback() {
+            override fun onPaused() {
+                super.onPaused()
+                // Handle display pause
+                println("Virtual display paused")
+            }
+
+            override fun onResumed() {
+                super.onResumed()
+                // Handle display resume
+                println("Virtual display resumed")
+            }
+
+            override fun onStopped() {
+                super.onStopped()
+                // Handle display stop
+                imageReader.close()
+                println("Virtual display stopped")
+            }
+        }
+    }
+
+    private fun getMediaProjectionCallback(): MediaProjection.Callback {
+        return object : MediaProjection.Callback() {
+            override fun onStop() {
+                super.onStop()
+                println("MediaProjection stopped")
+//                    virtualDisplay?.release() // TODO properly release virtualDisplay
+            }
+        }
     }
 
     private fun setupImageReader(displayMetrics: DisplayMetrics): ImageReader {
@@ -87,15 +118,13 @@ class ScreenCaptureService : Service() {
             displayMetrics.widthPixels,
             displayMetrics.heightPixels,
             PixelFormat.RGBA_8888,
-            2
+            1
         )
 
         imageReader.setOnImageAvailableListener({ reader ->
             val image: Image? = reader.acquireLatestImage()
             println("setOnImageAvailableListener called!")
             image?.let {
-                // Process the image here
-//                processImage(it)
                 test += 1
                 println("in image processing")
                 val file = File(Environment.getExternalStorageDirectory().absolutePath + "/Download/" + test + "captured_image.png")
@@ -104,28 +133,6 @@ class ScreenCaptureService : Service() {
             }
         }, null)
         return imageReader
-    }
-
-    private fun processImage(image: Image) {
-        test += 1
-        if (test > 0)
-            return
-        val buffer = image.planes[0].buffer
-        val pixelStride = image.planes[0].pixelStride
-        val rowStride = image.planes[0].rowStride
-        val rowPadding = rowStride - pixelStride * image.width
-
-        val bitmap = Bitmap.createBitmap(
-            image.width + rowPadding / pixelStride,
-            image.height,
-            Bitmap.Config.ARGB_8888
-        )
-        bitmap.copyPixelsFromBuffer(buffer)
-        val file = File(Environment.getExternalStorageDirectory().absolutePath + "/Download/" + "/captured_image.png")
-//        saveBitmap(bitmap, file)
-
-        // Use the bitmap for whatever you need
-        // For example, you can save it or display it in an ImageView
     }
 
     private fun activateNotification() {
