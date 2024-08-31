@@ -9,7 +9,7 @@ import java.net.SocketException
 
 fun createServerSocketConnection(portNum: Int = 8121): Socket? {
     return try {
-        val serverSocket = ServerSocket(portNum)
+        val serverSocket = ServerSocket(portNum) // TODO this isn't being closed
 
         val clientSocket = serverSocket.accept()
 

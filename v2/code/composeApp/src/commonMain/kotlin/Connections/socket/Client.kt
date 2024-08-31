@@ -1,7 +1,7 @@
 package connections.socket
 import java.net.Socket
 
-fun createClientSocketConnection(serverIp: String, port: Int) : Socket? {
+fun createClientSocketConnection(serverIp: String, port: Int = 8121) : Socket? {
     println("trying to connect...")
     return try {
         val socket = Socket(serverIp, port)
@@ -10,7 +10,7 @@ fun createClientSocketConnection(serverIp: String, port: Int) : Socket? {
 //        socket.close()
         socket
     } catch (e: Exception) {
-        println("connectToDevice has thrown an exception. $e")
+        println("createClientSocketConnection error: $e")
         null
     }
 }

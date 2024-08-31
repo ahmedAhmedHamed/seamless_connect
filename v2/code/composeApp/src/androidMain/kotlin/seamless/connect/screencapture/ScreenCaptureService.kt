@@ -21,7 +21,13 @@ import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.core.app.NotificationCompat
 import connections.socket.createClientSocketConnection
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import java.io.File
+import java.io.OutputStream
 import java.net.Socket
 
 /**
@@ -47,13 +53,21 @@ class ScreenCaptureService : Service() {
 
     private var mediaProjection: MediaProjection? = null
     private var test = 0
-//    private  var socket: Socket? = createClientSocketConnection("192.168.1.5")
+    private val serviceJob = Job() // TODO free
+    private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
+    private lateinit var socket: Socket
+    private lateinit var outputStream: OutputStream // TODO free
+
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-//        if (socket === null) {
-//            // TODO error handle this
-//            println("screencaptureservice socket is null!!!")
-//        }
+        var tempSocket: Socket? = null
+
+        serviceScope.launch {
+            tempSocket = createClientSocketConnection("192.168.1.5") // TODO free
+            socket = tempSocket!!
+            outputStream = socket.getOutputStream()
+
+        }
         val projectionManager = getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
         val resultCode = intent?.getIntExtra("resultCode", Activity.RESULT_CANCELED)
         val data = intent?.getParcelableExtra<Intent>("data")
@@ -83,14 +97,18 @@ class ScreenCaptureService : Service() {
     }
 
     private fun setOnImageAvailableListener(imageReader: ImageReader) {
+        // this might be better to not be on the main thread
         imageReader.setOnImageAvailableListener({ reader ->
             val image: Image? = reader.acquireLatestImage()
             println("setOnImageAvailableListener called!")
             image?.let {
                 test += 1
                 println("in image processing")
-                val file = File(Environment.getExternalStorageDirectory().absolutePath + "/Download/" + test + "captured_image.png")
-                saveImageToFile(it, file)
+                if (::outputStream.isInitialized) {
+                    serviceScope.launch {
+                        sendImageToServer(it, outputStream)
+                    }
+                }
                 it.close() // Don't forget to close the image to free up resources
             }
         }, null)
