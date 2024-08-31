@@ -8,9 +8,10 @@ import java.net.Socket
 import java.net.SocketException
 
 fun createServerSocketConnection(portNum: Int = 8121): Socket? {
+    println("creating server socket")
     return try {
         val serverSocket = ServerSocket(portNum) // TODO this isn't being closed
-
+        println("server socket created")
         val clientSocket = serverSocket.accept()
 
         println("Client connected from ${clientSocket.inetAddress.hostAddress}:${clientSocket.port}")
