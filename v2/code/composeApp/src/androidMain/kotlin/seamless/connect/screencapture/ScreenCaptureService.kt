@@ -60,12 +60,13 @@ class ScreenCaptureService : Service() {
         val displayMetrics = resources.displayMetrics
 
         val imageReader: ImageReader = setupImageReader(displayMetrics)
+        setOnImageAvailableListener(imageReader)
 
         if (resultCode == Activity.RESULT_OK && data != null) {
             activateNotification()
             mediaProjection = projectionManager.getMediaProjection(resultCode, data) as MediaProjection
             mediaProjection?.registerCallback(getMediaProjectionCallback(), null)
-
+            // TODO if media projection is null, fail
             var virtualDisplay = mediaProjection!!.createVirtualDisplay(
                 "ScreenCapture",
                 displayMetrics.widthPixels,
@@ -74,10 +75,25 @@ class ScreenCaptureService : Service() {
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
                 imageReader.surface,
                 getVirtualDisplayCallback(imageReader), null)
+            // TODO if virtualDisplay is not working, fail
         }
 
 
         return START_NOT_STICKY
+    }
+
+    private fun setOnImageAvailableListener(imageReader: ImageReader) {
+        imageReader.setOnImageAvailableListener({ reader ->
+            val image: Image? = reader.acquireLatestImage()
+            println("setOnImageAvailableListener called!")
+            image?.let {
+                test += 1
+                println("in image processing")
+                val file = File(Environment.getExternalStorageDirectory().absolutePath + "/Download/" + test + "captured_image.png")
+                saveImageToFile(it, file)
+                it.close() // Don't forget to close the image to free up resources
+            }
+        }, null)
     }
 
     private fun getVirtualDisplayCallback(imageReader: ImageReader): VirtualDisplay.Callback {
@@ -120,18 +136,6 @@ class ScreenCaptureService : Service() {
             PixelFormat.RGBA_8888,
             1
         )
-
-        imageReader.setOnImageAvailableListener({ reader ->
-            val image: Image? = reader.acquireLatestImage()
-            println("setOnImageAvailableListener called!")
-            image?.let {
-                test += 1
-                println("in image processing")
-                val file = File(Environment.getExternalStorageDirectory().absolutePath + "/Download/" + test + "captured_image.png")
-                saveImageToFile(it, file)
-                it.close() // Don't forget to close the image to free up resources
-            }
-        }, null)
         return imageReader
     }
 
