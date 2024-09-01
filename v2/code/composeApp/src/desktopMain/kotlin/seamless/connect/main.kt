@@ -96,28 +96,38 @@ fun main() = application {
         val coroutineScope = rememberCoroutineScope()
         var imageState by
         remember { mutableStateOf(loadImage("C:\\Users\\Stan\\Pictures\\potat2023.png")) }
-        var testTextState by remember { mutableStateOf("amonugs") }
-        var count by remember { mutableStateOf(0) }
         Image(bitmap = imageState, contentDescription = null)
-//        val xx = loadImageAsByteArray("C:\\Users\\Stan\\Pictures\\potat.png")
-//        imageState = byteArrayToImageBitmap(xx)
-//        Column {
-//            Text("Count: $count")
-//            Button(onClick = {
-//                count++
-//                testTextState = "aeuw"
-//                val x = loadImageAsByteArray("C:\\Users\\Stan\\Pictures\\potat2023.png")
-//                imageState.value = byteArrayToImageBitmap(x)
-//            }) {
-//                Image(bitmap = imageState.value!!, contentDescription = null)
-//            }
-//        }
+
         LaunchedEffect(Unit) {
             coroutineScope.launch(Dispatchers.IO) {
-                Thread.sleep(1000);
-                imageState = loadImage("C:\\Users\\Stan\\Pictures\\potat.png")
+                val clientConnection = createServerSocketConnection()
+                if (clientConnection !== null) {
+                    val inputStream = DataInputStream(clientConnection.getInputStream())
+                    while (true) {
+                        try {
+                            val length = inputStream.readInt()
+                            if (length > 0) {
+                                val imageByteArray = ByteArray(length)
+                                inputStream.readFully(imageByteArray)
+//                            withContext(Dispatchers.Main) {
+                                imageState = byteArrayToImageBitmap(imageByteArray)
+//                            }
+                            }
+                        } catch (e: Exception){
+                            print("")
+                        }
+                    }
+                }
             }
         }
+
+//        LaunchedEffect(Unit) {
+//            coroutineScope.launch(Dispatchers.IO) {
+//                Thread.sleep(1000);
+//                imageState = loadImage("C:\\Users\\Stan\\Pictures\\potat.png")
+//            }
+//        }
+
     }
 }
 
