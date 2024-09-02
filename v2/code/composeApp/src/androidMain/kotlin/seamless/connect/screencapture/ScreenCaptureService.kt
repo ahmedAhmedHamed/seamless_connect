@@ -60,13 +60,12 @@ class ScreenCaptureService : Service() {
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        var tempSocket: Socket? = null
+        var tempSocket: Socket?
 
         serviceScope.launch {
             tempSocket = createClientSocketConnection("192.168.1.5") // TODO free
             socket = tempSocket!!
             outputStream = socket.getOutputStream()
-
         }
         val projectionManager = getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
         val resultCode = intent?.getIntExtra("resultCode", Activity.RESULT_CANCELED)
@@ -100,16 +99,18 @@ class ScreenCaptureService : Service() {
         // this might be better to not be on the main thread
         imageReader.setOnImageAvailableListener({ reader ->
             val image: Image? = reader.acquireLatestImage()
-            println("setOnImageAvailableListener called!")
             image?.let {
                 test += 1
-                println("in image processing")
-                if (::outputStream.isInitialized) {
-                    serviceScope.launch {
-                        sendImageToServer(it, outputStream)
+                if (test % 30 == 0) {
+                    if (::outputStream.isInitialized) {
+                        println("sending image over socket")
+                        serviceScope.launch {
+                            sendImageToServer(it, outputStream)
+                        }
                     }
+                } else {
+                it.close()
                 }
-                it.close() // Don't forget to close the image to free up resources
             }
         }, null)
     }
@@ -152,7 +153,7 @@ class ScreenCaptureService : Service() {
             displayMetrics.widthPixels,
             displayMetrics.heightPixels,
             PixelFormat.RGBA_8888,
-            1
+            60
         )
         return imageReader
     }

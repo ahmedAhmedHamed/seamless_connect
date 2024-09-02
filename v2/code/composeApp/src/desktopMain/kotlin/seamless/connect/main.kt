@@ -1,6 +1,5 @@
 package seamless.connect
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.window.Window
@@ -12,18 +11,12 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.loadImageBitmap
 import java.io.ByteArrayInputStream
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.toComposeImageBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.awt.image.BufferedImage
-import java.io.ByteArrayOutputStream
 import java.io.File
 
 fun byteArrayToImageBitmap(byteArray: ByteArray): ImageBitmap {
