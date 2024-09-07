@@ -51,21 +51,24 @@ def get_phone_frame():
     return frame_data
 
 
+def render_phone_frame(frame_data):
+    global pygame
+    global screen
+    frame = np.frombuffer(frame_data, dtype=np.uint8).reshape((height, width, 3))
+    pygame_surface = pygame.surfarray.make_surface(frame)
+    screen.blit(pygame_surface, (0, 0))
+    pygame.display.flip()
+
 running = True
 while running:
     try:
         frame_size = height * width * 3  # Adjust if needed
         start_adb_streaming()
         frame_data = get_phone_frame()
-        frame = np.frombuffer(frame_data, dtype=np.uint8).reshape((height, width, 3))
-        pygame_surface = pygame.surfarray.make_surface(frame)
-
-        screen.blit(pygame_surface, (0, 0))
-        pygame.display.flip()
+        render_phone_frame(frame_data)
     except:
         pass
 
-# Clean up
 pygame.quit()
 ffmpeg_process.terminate()
 adb_process.terminate()
