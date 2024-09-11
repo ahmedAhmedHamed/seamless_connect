@@ -8,21 +8,38 @@ from tkinter import DISABLED
 class MainScreen:
 
     def __init__(self):
+        self.scrcpy_result = None
         self.root = tk.Tk()
         self.root.title("Tkinter Example")
         self.label = tk.Label(self.root, text="Hello, Tkinter!", font=("Arial", 14))
         self.label.pack(pady=20)
-        self.button = tk.Button(self.root, text="launch bridge mirroring", command=self.launch_scrcpy, font=("Arial", 12))
+        self.build_phone_controls()
+        self.build_stdout_box()
+
+    def build_stdout_box(self):
+        self.stdout_text_box = tk.Text(self.root, height=10, width=50)
+        self.stdout_text_box.pack(pady=20)
+
+    def build_phone_controls(self):
+        self.button = tk.Button(self.root, text="launch bridge mirroring", command=self.launch_scrcpy,
+                                font=("Arial", 12))
         self.button.pack(pady=10)
-        self.button2 = tk.Button(self.root, text="update_label", command=self.update_label, font=("Arial", 12))
+
+        self.otg_button_check = tk.BooleanVar()
+        self.button2 = tk.Checkbutton(self.root, text="OTG mode", variable=self.otg_button_check)
         self.button2.pack(pady=10)
-        self.scrcpy_result = None
 
     def update_label(self):
         self.label.config(text="Button Clicked!")
 
+    def get_scrcpy_command(self):
+        command = ["dependencies/scrcpy-win64-v2.6.1/scrcpy.exe"]
+        if self.otg_button_check:
+            command.append("--otg")
+        return command
+
     def non_blocking_scrcpy(self):
-        scrcpy_process = subprocess.Popen("dependencies/scrcpy-win64-v2.6.1/scrcpy.exe", stdout=sys.stdout)
+        scrcpy_process = subprocess.Popen(self.get_scrcpy_command(), stdout=sys.stdout)
         self.scrcpy_result = scrcpy_process.wait()
         self.button.config(state=tk.NORMAL)
 
