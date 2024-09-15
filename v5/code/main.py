@@ -8,7 +8,7 @@ from components import ScrollableButtonBox
 class MainScreen:
 
     def __init__(self):
-        self.device_selection = None
+        self.device_selection: ScrollableButtonBox or None = None
         self.scrcpy_result = None
         self.root = tk.Tk()
         self.root.title("Seamless Connect")
@@ -32,8 +32,11 @@ class MainScreen:
 
     def get_scrcpy_command(self):
         command = ["dependencies/scrcpy-win64-v2.6.1/scrcpy.exe"]
-        if self.otg_button_check:
+        if self.otg_button_check.get():
             command.append("--otg")
+        if self.device_selection.get_selected_device_info()[0]:
+            device_serial, _ = self.device_selection.get_selected_device_info()
+            command.append(f'--serial={device_serial}')
         return command
 
     def non_blocking_scrcpy(self):
