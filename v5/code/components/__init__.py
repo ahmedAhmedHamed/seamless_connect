@@ -1,1 +1,1 @@
-from ScrollableButtonBox import ScrollableButtonBox
+from .ScrollableButtonBox import ScrollableButtonBox
