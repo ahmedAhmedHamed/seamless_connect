@@ -3,8 +3,10 @@ import subprocess
 
 
 class ScrollableButtonBox:
-    def __init__(self, parent, device_info=[]):
+    def __init__(self, parent, device_info=None):
         # Create a static frame for headers (outside the canvas)
+        if device_info is None:
+            device_info = []
         header_frame = tk.Frame(parent)
         header_frame.pack(fill=tk.X, pady=5)
 
