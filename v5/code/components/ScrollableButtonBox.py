@@ -1,5 +1,6 @@
 import tkinter as tk
 import subprocess
+from engine import adb_get_devices
 
 
 class ScrollableButtonBox:
@@ -74,16 +75,7 @@ class ScrollableButtonBox:
 
     def refresh(self):
         self.clear_buttons()
-        adb_devices_process = subprocess.Popen(['dependencies/scrcpy-win64-v2.6.1/adb', 'devices'],
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE,
-                                   text=True)
-        stdout, stderr = adb_devices_process.communicate()
-        device_list = []
-        for line in stdout.splitlines():
-            if '\t' in line:  # Each valid device line has a tab between the device ID and its status
-                device_id, status = line.split('\t')
-                device_list.append((device_id, status))
+        device_list = adb_get_devices()
         self.add_device_info_buttons(device_list)
 
     def clear_buttons(self):
