@@ -9,6 +9,7 @@ class MainScreen:
         self.root = tk.Tk()
         self.root.title("Seamless Connect")
         self.otg_button_check = tk.BooleanVar()
+        self.tcpip_check = tk.BooleanVar()
         self.device_selection_box = ScrollableButtonBox(self.root)
         self.build_phone_controls()
 
@@ -18,7 +19,9 @@ class MainScreen:
         self.launch_bridge_mirroring_btn.pack(pady=10)
 
         otg_mode_check = tk.Checkbutton(self.root, text="OTG mode", variable=self.otg_button_check)
-        otg_mode_check.pack(pady=10)
+        otg_mode_check.pack(pady=5)
+        tcpip_check = tk.Checkbutton(self.root, text="setup networking", variable=self.tcpip_check)
+        tcpip_check.pack(pady=0)
 
     def get_scrcpy_flags(self):
         command = []
@@ -27,6 +30,8 @@ class MainScreen:
         if self.device_selection_box.get_selected_device_info()[0]:
             device_serial, _ = self.device_selection_box.get_selected_device_info()
             command.append(f'--serial={device_serial}')
+        if self.tcpip_check.get():
+            command.append("--tcpip")
         return command
 
     def on_mirroring_end(self, result_code=0):
