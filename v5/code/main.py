@@ -8,9 +8,9 @@ class MainScreen:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Seamless Connect")
-        self.build_phone_controls()
-        self.device_selection_box = ScrollableButtonBox(self.root)
         self.otg_button_check = tk.BooleanVar()
+        self.device_selection_box = ScrollableButtonBox(self.root)
+        self.build_phone_controls()
 
     def build_phone_controls(self):
         self.launch_bridge_mirroring_btn = tk.Button(self.root, text="launch bridge mirroring", command=self.launch_scrcpy,
